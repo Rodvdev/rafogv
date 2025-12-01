@@ -14,6 +14,8 @@ export async function GET(request: Request) {
   const search = searchParams.get("search") || "";
   const checked = searchParams.get("checked");
   const district = searchParams.get("district");
+  const sortBy = searchParams.get("sortBy") || "createdAt";
+  const sortOrder = searchParams.get("sortOrder") || "desc";
 
   const skip = (page - 1) * limit;
 
@@ -39,6 +41,21 @@ export async function GET(request: Request) {
     };
   }
 
+  // Build orderBy object
+  let orderBy: Record<string, "asc" | "desc"> | { address: { district: "asc" | "desc" } } = {};
+  
+  if (sortBy === "name") {
+    orderBy = { name: sortOrder as "asc" | "desc" };
+  } else if (sortBy === "type") {
+    orderBy = { type: sortOrder as "asc" | "desc" };
+  } else if (sortBy === "district") {
+    orderBy = { address: { district: sortOrder as "asc" | "desc" } };
+  } else if (sortBy === "checked") {
+    orderBy = { checked: sortOrder as "asc" | "desc" };
+  } else {
+    orderBy = { createdAt: sortOrder as "asc" | "desc" };
+  }
+
   const [workshops, total] = await Promise.all([
     prisma.workshop.findMany({
       where,
@@ -46,9 +63,7 @@ export async function GET(request: Request) {
         address: true,
         contact: true,
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy,
       skip,
       take: limit,
     }),

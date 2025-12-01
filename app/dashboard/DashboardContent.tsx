@@ -71,6 +71,8 @@ export default function DashboardContent() {
   const [search, setSearch] = useState("");
   const [filterChecked, setFilterChecked] = useState<string>("all");
   const [filterDistrict, setFilterDistrict] = useState("");
+  const [sortBy, setSortBy] = useState<string>("createdAt");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   // Cargar totales al inicio (sin filtros)
   useEffect(() => {
@@ -92,10 +94,10 @@ export default function DashboardContent() {
     fetchTotals();
   }, []);
 
-  // Cargar datos cuando cambian los filtros o paginación
+  // Cargar datos cuando cambian los filtros, paginación o ordenamiento
   useEffect(() => {
     fetchData();
-  }, [activeTab, workshopPagination.page, rectifierPagination.page, search, filterChecked, filterDistrict]);
+  }, [activeTab, workshopPagination.page, rectifierPagination.page, search, filterChecked, filterDistrict, sortBy, sortOrder]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -116,6 +118,9 @@ export default function DashboardContent() {
       if (filterDistrict) {
         params.append("district", filterDistrict);
       }
+
+      params.append("sortBy", sortBy);
+      params.append("sortOrder", sortOrder);
 
       const endpoint = activeTab === "workshops" ? `/api/workshops?${params}` : `/api/rectifiers?${params}`;
       const response = await fetch(endpoint);
@@ -172,6 +177,34 @@ export default function DashboardContent() {
     } else {
       setRectifierPagination(prev => ({ ...prev, page: newPage }));
     }
+  };
+
+  const handleSort = (column: string) => {
+    if (sortBy === column) {
+      // Si ya está ordenando por esta columna, cambiar el orden
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      // Nueva columna, ordenar ascendente por defecto
+      setSortBy(column);
+      setSortOrder("asc");
+    }
+    // Resetear a página 1 cuando cambia el ordenamiento
+    if (activeTab === "workshops") {
+      setWorkshopPagination(prev => ({ ...prev, page: 1 }));
+    } else {
+      setRectifierPagination(prev => ({ ...prev, page: 1 }));
+    }
+  };
+
+  const SortIcon = ({ column }: { column: string }) => {
+    if (sortBy !== column) {
+      return <span className="ml-1 text-gray-400">↕</span>;
+    }
+    return sortOrder === "asc" ? (
+      <span className="ml-1 text-blue-600">↑</span>
+    ) : (
+      <span className="ml-1 text-blue-600">↓</span>
+    );
   };
 
   const currentPagination = activeTab === "workshops" ? workshopPagination : rectifierPagination;
@@ -249,7 +282,7 @@ export default function DashboardContent() {
                   setRectifierPagination(prev => ({ ...prev, page: 1 }));
                 }
               }}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
           <div>
@@ -263,7 +296,7 @@ export default function DashboardContent() {
                   setRectifierPagination(prev => ({ ...prev, page: 1 }));
                 }
               }}
-              className="rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               <option value="all">Todos</option>
               <option value="true">Verificados</option>
@@ -283,7 +316,7 @@ export default function DashboardContent() {
                   setRectifierPagination(prev => ({ ...prev, page: 1 }));
                 }
               }}
-              className="rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
           <div>
@@ -304,14 +337,32 @@ export default function DashboardContent() {
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   ✓
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Nombre
+                <th
+                  onClick={() => handleSort("name")}
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 cursor-pointer hover:bg-gray-100 select-none"
+                >
+                  <div className="flex items-center">
+                    Nombre
+                    <SortIcon column="name" />
+                  </div>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Tipo
+                <th
+                  onClick={() => handleSort("type")}
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 cursor-pointer hover:bg-gray-100 select-none"
+                >
+                  <div className="flex items-center">
+                    Tipo
+                    <SortIcon column="type" />
+                  </div>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Distrito
+                <th
+                  onClick={() => handleSort("district")}
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 cursor-pointer hover:bg-gray-100 select-none"
+                >
+                  <div className="flex items-center">
+                    Distrito
+                    <SortIcon column="district" />
+                  </div>
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Contacto

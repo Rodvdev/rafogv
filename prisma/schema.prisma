@@ -1,0 +1,107 @@
+// ---------------------------------------------
+// DATABASE CONFIGURATION
+// ---------------------------------------------
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------
+// MODELS
+// ---------------------------------------------
+
+/// Address normalized for Lima (districts, province, country)
+model Address {
+  id          String           @id @default(cuid())
+  street      String?
+  district    String
+  province    String           @default("Lima")
+  country     String           @default("Perú")
+  latitude    Float?
+  longitude   Float?
+  workshopId  String?          @unique
+  rectifierId String?          @unique
+  workshop    Workshop?        @relation(fields: [workshopId], references: [id])
+  rectifier   EngineRectifier? @relation(fields: [rectifierId], references: [id])
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+/// General Contact
+model Contact {
+  id          String           @id @default(cuid())
+  phone       String?
+  phoneAlt    String?
+  email       String?
+  whatsapp    String?
+  website     String?
+  facebook    String?
+  instagram   String?
+  workshopId  String?          @unique
+  rectifierId String?          @unique
+  workshop    Workshop?        @relation(fields: [workshopId], references: [id])
+  rectifier   EngineRectifier? @relation(fields: [rectifierId], references: [id])
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+/// Mechanical Workshop (Taller mecánico)
+model Workshop {
+  id          String       @id @default(cuid())
+  name        String
+  type        WorkshopType
+  description String?
+  services    String[] // ejemplo: ["alineamiento", "frenos", "gnv"]
+  rating      Float? // opcional si quieres usar reseñas
+  tenantId    String? // para multi-tenant
+  address     Address?
+  contact     Contact?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+/// Engine Rectifier (Rectificadora de motores)
+model EngineRectifier {
+  id          String        @id @default(cuid())
+  name        String
+  type        RectifierType
+  description String?
+  specialties String[] // ejemplo: ["rectificación", "cigüeñal", "camisas"]
+  rating      Float?
+  tenantId    String?
+  address     Address?
+  contact     Contact?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+// ---------------------------------------------
+// ENUMS
+// ---------------------------------------------
+
+enum WorkshopType {
+  MECANICO
+  MULTIMARCA
+  ELECTRICO
+  FRENOS
+  SUSPENSION
+  DIRECCION
+  LLANTAS
+  DIAGNOSTICO
+  GNV_GLP
+  OFICIAL
+  A_DOMICILIO
+}
+
+enum RectifierType {
+  RECTIFICADORA
+  DIESEL
+  ELECTRICO
+  TORNERIA
+  COMPRESORES
+}

@@ -3,7 +3,19 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
+const authSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
+
+// Use a default secret for development/build, but warn in production
+const secret = authSecret || (process.env.NODE_ENV === "production" 
+  ? undefined 
+  : "development-secret-change-in-production");
+
+if (!secret && process.env.NODE_ENV === "production") {
+  console.error("⚠️  AUTH_SECRET or NEXTAUTH_SECRET must be set in production");
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  secret: secret || "development-secret-change-in-production",
   providers: [
     CredentialsProvider({
       name: "Credentials",

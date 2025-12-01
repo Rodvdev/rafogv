@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Talleres Lima - Sistema de Gestión
 
-## Getting Started
+Sistema de gestión de talleres mecánicos y rectificadoras en Lima con autenticación y CRUD completo.
 
-First, run the development server:
+## 🚀 Configuración
+
+### Variables de Entorno
+
+Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
+
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/talleres_lima?schema=public"
+
+# NextAuth Secret (genera uno con: openssl rand -base64 32)
+AUTH_SECRET="tu-secret-key-aqui"
+NEXTAUTH_SECRET="tu-secret-key-aqui"
+```
+
+### Generar AUTH_SECRET
+
+```bash
+openssl rand -base64 32
+```
+
+## 📦 Instalación
+
+```bash
+npm install
+```
+
+## 🗄️ Base de Datos
+
+### Migraciones
+
+```bash
+npm run prisma:migrate:dev --name init
+```
+
+### Seed de Datos
+
+```bash
+# Seed de talleres y rectificadoras
+npm run prisma:seed
+
+# Seed de usuarios (super admin)
+npm run prisma:seed-users
+```
+
+### Credenciales por Defecto
+
+- **Email:** `oficina@rgvautoparts.com`
+- **Password:** `admin123`
+- **Role:** `SUPER_ADMIN`
+
+## 🛠️ Desarrollo
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📊 Dashboard
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Accede al dashboard en `/dashboard` después de iniciar sesión.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Características
 
-## Learn More
+- ✅ Paginación (10 registros por página)
+- ✅ Búsqueda por nombre
+- ✅ Filtros por estado (verificado/no verificado)
+- ✅ Filtro por distrito
+- ✅ CRUD completo (Crear, Leer, Actualizar, Eliminar)
+- ✅ Marcar registros como verificados
+- ✅ Tablas separadas para Talleres y Rectificadoras
 
-To learn more about Next.js, take a look at the following resources:
+## 🚢 Despliegue
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Conecta tu repositorio a Vercel
+2. Agrega las variables de entorno:
+   - `DATABASE_URL`
+   - `AUTH_SECRET` (genera uno nuevo para producción)
+3. Deploy automático
 
-## Deploy on Vercel
+## 📝 Fuentes Principales
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [TallerMec.net.pe](https://tallermec.net.pe)
+- [Páginas Amarillas](https://www.paginasamarillas.com.pe)
+- [Ubicania.com](https://ubicania.com)

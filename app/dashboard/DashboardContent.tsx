@@ -212,23 +212,37 @@ export default function DashboardContent() {
 
   if (loading && currentData.length === 0) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-lg">Cargando...</p>
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="text-center">
+          <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
+          <p className="mt-4 text-lg font-medium text-gray-700">Cargando datos...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
+      <nav className="bg-white shadow-lg border-b border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            <h1 className="text-xl font-bold text-gray-900">Dashboard - Talleres Lima</h1>
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600">
+                <span className="text-xl font-bold text-white">T</span>
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">Dashboard - Talleres Lima</h1>
+                <p className="text-xs text-gray-500">Sistema de gestión</p>
+              </div>
+            </div>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-900">{session?.user?.email}</span>
+              <div className="hidden sm:flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-2">
+                <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                <span className="text-sm font-medium text-gray-700">{session?.user?.email}</span>
+              </div>
               <button
                 onClick={() => signOut({ callbackUrl: "/signin" })}
-                className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
+                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-red-700 hover:shadow-md active:scale-95"
               >
                 Cerrar Sesión
               </button>
@@ -238,37 +252,90 @@ export default function DashboardContent() {
       </nav>
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-6 flex gap-4">
+        {/* Stats Cards */}
+        <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div className="overflow-hidden rounded-xl bg-white shadow-lg transition-all hover:shadow-xl">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-blue-100">Total Talleres</p>
+                  <p className="text-3xl font-bold text-white">{workshopPagination.total}</p>
+                </div>
+                <div className="rounded-full bg-white/20 p-3">
+                  <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="overflow-hidden rounded-xl bg-white shadow-lg transition-all hover:shadow-xl">
+            <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-purple-100">Total Rectificadoras</p>
+                  <p className="text-3xl font-bold text-white">{rectifierPagination.total}</p>
+                </div>
+                <div className="rounded-full bg-white/20 p-3">
+                  <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="mb-6 flex gap-3">
           <button
             onClick={() => {
               setActiveTab("workshops");
               setWorkshopPagination(prev => ({ ...prev, page: 1 }));
             }}
-            className={`rounded-md px-4 py-2 ${
+            className={`group flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-all ${
               activeTab === "workshops"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700 hover:bg-gray-50"
+                ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg"
+                : "bg-white text-gray-700 shadow hover:bg-gray-50 hover:shadow-md"
             }`}
           >
-            Talleres ({workshopPagination.total})
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+            Talleres
+            <span className={`ml-1 rounded-full px-2 py-0.5 text-xs ${
+              activeTab === "workshops" ? "bg-white/20" : "bg-gray-200"
+            }`}>
+              {workshopPagination.total}
+            </span>
           </button>
           <button
             onClick={() => {
               setActiveTab("rectifiers");
               setRectifierPagination(prev => ({ ...prev, page: 1 }));
             }}
-            className={`rounded-md px-4 py-2 ${
+            className={`group flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-all ${
               activeTab === "rectifiers"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700 hover:bg-gray-50"
+                ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg"
+                : "bg-white text-gray-700 shadow hover:bg-gray-50 hover:shadow-md"
             }`}
           >
-            Rectificadoras ({rectifierPagination.total})
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Rectificadoras
+            <span className={`ml-1 rounded-full px-2 py-0.5 text-xs ${
+              activeTab === "rectifiers" ? "bg-white/20" : "bg-gray-200"
+            }`}>
+              {rectifierPagination.total}
+            </span>
           </button>
         </div>
 
         {/* Filtros y búsqueda */}
-        <div className="mb-4 flex flex-wrap gap-4 rounded-lg bg-white p-4 shadow">
+        <div className="mb-6 flex flex-wrap gap-4 rounded-xl bg-white p-6 shadow-lg">
           <div className="flex-1 min-w-[200px]">
             <input
               type="text"
@@ -322,17 +389,20 @@ export default function DashboardContent() {
           <div>
             <button
               onClick={() => setShowAddForm(true)}
-              className="rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+              className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 px-5 py-2.5 font-medium text-white shadow-md transition-all hover:from-green-700 hover:to-emerald-700 hover:shadow-lg active:scale-95"
             >
-              + Agregar {activeTab === "workshops" ? "Taller" : "Rectificadora"}
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Agregar {activeTab === "workshops" ? "Taller" : "Rectificadora"}
             </button>
           </div>
         </div>
 
         {/* Tabla */}
-        <div className="overflow-x-auto rounded-lg bg-white shadow">
+        <div className="overflow-x-auto rounded-xl bg-white shadow-lg">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   ✓
@@ -375,21 +445,34 @@ export default function DashboardContent() {
             <tbody className="divide-y divide-gray-200 bg-white">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">
-                    Cargando...
+                  <td colSpan={6} className="px-6 py-12 text-center">
+                    <div className="flex flex-col items-center justify-center">
+                      <div className="h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
+                      <p className="mt-4 text-sm font-medium text-gray-500">Cargando datos...</p>
+                    </div>
                   </td>
                 </tr>
               ) : currentData.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">
-                    No se encontraron registros
+                  <td colSpan={6} className="px-6 py-12 text-center">
+                    <div className="flex flex-col items-center justify-center">
+                      <svg className="h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="mt-4 text-sm font-medium text-gray-500">No se encontraron registros</p>
+                      <p className="mt-1 text-xs text-gray-400">Intenta ajustar los filtros de búsqueda</p>
+                    </div>
                   </td>
                 </tr>
               ) : (
                 currentData.map((item) => (
                   <tr
                     key={item.id}
-                    className={item.checked ? "bg-green-50" : ""}
+                    className={`transition-colors ${
+                      item.checked 
+                        ? "bg-green-50 hover:bg-green-100" 
+                        : "hover:bg-gray-50"
+                    }`}
                   >
                     <td className="whitespace-nowrap px-6 py-4">
                       <input
@@ -425,25 +508,33 @@ export default function DashboardContent() {
                       {item.contact?.phone || item.contact?.email || "N/A"}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
-                      <button
-                        onClick={() => {
-                          const editPath = activeTab === "workshops" 
-                            ? `/dashboard/workshops/${item.id}/edit`
-                            : `/dashboard/rectifiers/${item.id}/edit`;
-                          router.push(editPath);
-                        }}
-                        className="text-blue-600 hover:text-blue-900"
-                      >
-                        Editar
-                      </button>
-                      <button
-                        onClick={() =>
-                          handleDelete(item.id, activeTab === "workshops" ? "workshop" : "rectifier")
-                        }
-                        className="ml-4 text-red-600 hover:text-red-900"
-                      >
-                        Eliminar
-                      </button>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => {
+                            const editPath = activeTab === "workshops" 
+                              ? `/dashboard/workshops/${item.id}/edit`
+                              : `/dashboard/rectifiers/${item.id}/edit`;
+                            router.push(editPath);
+                          }}
+                          className="flex items-center gap-1 rounded-md bg-blue-50 px-3 py-1.5 text-blue-700 transition-all hover:bg-blue-100 hover:text-blue-900"
+                        >
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                          Editar
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleDelete(item.id, activeTab === "workshops" ? "workshop" : "rectifier")
+                          }
+                          className="flex items-center gap-1 rounded-md bg-red-50 px-3 py-1.5 text-red-700 transition-all hover:bg-red-100 hover:text-red-900"
+                        >
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                          Eliminar
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -454,24 +545,27 @@ export default function DashboardContent() {
 
         {/* Paginación */}
         {currentPagination.totalPages > 1 && (
-          <div className="mt-4 flex items-center justify-between rounded-lg bg-white px-4 py-3 shadow">
-            <div className="text-sm text-gray-700">
+          <div className="mt-6 flex items-center justify-between rounded-xl bg-white px-6 py-4 shadow-lg">
+            <div className="text-sm text-gray-600">
               Mostrando{" "}
-              <span className="font-medium">
+              <span className="font-semibold text-gray-900">
                 {(currentPagination.page - 1) * currentPagination.limit + 1}
               </span>{" "}
               a{" "}
-              <span className="font-medium">
+              <span className="font-semibold text-gray-900">
                 {Math.min(currentPagination.page * currentPagination.limit, currentPagination.total)}
               </span>{" "}
-              de <span className="font-medium">{currentPagination.total}</span> resultados
+              de <span className="font-semibold text-gray-900">{currentPagination.total}</span> resultados
             </div>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <button
                 onClick={() => handlePageChange(currentPagination.page - 1)}
                 disabled={currentPagination.page === 1}
-                className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:shadow-none"
               >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
                 Anterior
               </button>
               <div className="flex gap-1">
@@ -490,10 +584,10 @@ export default function DashboardContent() {
                     <button
                       key={pageNum}
                       onClick={() => handlePageChange(pageNum)}
-                      className={`rounded-md px-3 py-2 text-sm font-medium ${
+                      className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
                         currentPagination.page === pageNum
-                          ? "bg-blue-600 text-white"
-                          : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                          ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md"
+                          : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:shadow-sm"
                       }`}
                     >
                       {pageNum}
@@ -504,9 +598,12 @@ export default function DashboardContent() {
               <button
                 onClick={() => handlePageChange(currentPagination.page + 1)}
                 disabled={currentPagination.page === currentPagination.totalPages}
-                className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:shadow-none"
               >
                 Siguiente
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
               </button>
             </div>
           </div>

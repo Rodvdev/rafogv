@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "../api/auth/[...nextauth]/auth";
-import DashboardSidebar from "./DashboardSidebar";
+import DashboardLayoutClient from "./DashboardLayoutClient";
 
 export default async function DashboardLayout({
   children,
@@ -13,11 +13,6 @@ export default async function DashboardLayout({
     redirect("/signin");
   }
 
-  return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
-      <DashboardSidebar session={session} />
-      <main className="flex-1">{children}</main>
-    </div>
-  );
+  return <DashboardLayoutClient session={session}>{children}</DashboardLayoutClient>;
 }
 

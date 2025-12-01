@@ -78,10 +78,48 @@ Accede al dashboard en `/dashboard` después de iniciar sesión.
 ### Vercel
 
 1. Conecta tu repositorio a Vercel
-2. Agrega las variables de entorno:
-   - `DATABASE_URL`
-   - `AUTH_SECRET` (genera uno nuevo para producción)
-3. Deploy automático
+2. **IMPORTANTE**: Agrega las variables de entorno en la configuración del proyecto:
+   - Ve a **Settings** → **Environment Variables**
+   - Agrega las siguientes variables:
+   
+   ```
+   DATABASE_URL=postgresql://user:password@host:5432/database?schema=public
+   AUTH_SECRET=tu-secret-generado-con-openssl-rand-base64-32
+   ```
+   
+   ⚠️ **CRÍTICO**: Sin `DATABASE_URL`, la aplicación fallará con el error:
+   ```
+   Environment variable not found: DATABASE_URL
+   ```
+
+3. **Generar AUTH_SECRET para producción:**
+   ```bash
+   openssl rand -base64 32
+   ```
+   Copia el resultado y úsalo como valor de `AUTH_SECRET`
+
+4. **Configurar Base de Datos:**
+   - Usa una base de datos PostgreSQL (Vercel Postgres, Supabase, Railway, etc.)
+   - Copia la connection string y úsala como `DATABASE_URL`
+   - Ejemplo de formato: `postgresql://user:password@host:5432/dbname?schema=public`
+
+5. **Ejecutar migraciones en producción:**
+   ```bash
+   npm run prisma:migrate:deploy
+   ```
+
+6. **Ejecutar seed (opcional):**
+   ```bash
+   npm run prisma:seed
+   npm run prisma:seed-users
+   ```
+
+### Otras Plataformas
+
+Para cualquier plataforma de hosting (Railway, Render, etc.), asegúrate de:
+1. Configurar las variables de entorno `DATABASE_URL` y `AUTH_SECRET`
+2. Ejecutar las migraciones de Prisma antes del primer deploy
+3. Verificar que la base de datos esté accesible desde el entorno de producción
 
 ## 📝 Fuentes Principales
 

@@ -2,6 +2,7 @@
 
 import { useSession, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface Workshop {
   id: string;
@@ -48,6 +49,7 @@ interface Pagination {
 
 export default function DashboardContent() {
   const { data: session } = useSession();
+  const router = useRouter();
   const [workshops, setWorkshops] = useState<Workshop[]>([]);
   const [rectifiers, setRectifiers] = useState<Rectifier[]>([]);
   const [workshopPagination, setWorkshopPagination] = useState<Pagination>({
@@ -362,7 +364,12 @@ export default function DashboardContent() {
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
                       <button
-                        onClick={() => setEditing(item.id)}
+                        onClick={() => {
+                          const editPath = activeTab === "workshops" 
+                            ? `/dashboard/workshops/${item.id}/edit`
+                            : `/dashboard/rectifiers/${item.id}/edit`;
+                          router.push(editPath);
+                        }}
                         className="text-blue-600 hover:text-blue-900"
                       >
                         Editar

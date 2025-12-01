@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/app/api/auth/[...nextauth]/auth";
-import EditWorkshopForm from "./EditWorkshopForm";
+import EditRectifierForm from "./EditRectifierForm";
 
-export default async function EditWorkshopPage({
+export default async function EditRectifierPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -14,6 +14,6 @@ export default async function EditWorkshopPage({
 
   const { id } = await params;
 
-  return <EditWorkshopForm id={id} />;
+  return <EditRectifierForm id={id} />;
 }
 

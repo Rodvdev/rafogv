@@ -222,35 +222,7 @@ export default function DashboardContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
-      <nav className="bg-white shadow-lg border-b border-gray-200">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600">
-                <span className="text-xl font-bold text-white">T</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">Dashboard - Talleres Lima</h1>
-                <p className="text-xs text-gray-500">Sistema de gestión</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="hidden sm:flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-2">
-                <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                <span className="text-sm font-medium text-gray-700">{session?.user?.email}</span>
-              </div>
-              <button
-                onClick={() => signOut({ callbackUrl: "/signin" })}
-                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-red-700 hover:shadow-md active:scale-95"
-              >
-                Cerrar Sesión
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+    <div className="flex-1">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Stats Cards */}
         <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2">

@@ -402,7 +402,18 @@ export default function DashboardContent() {
                       />
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
-                      {item.name}
+                      {item.contact?.website ? (
+                        <a
+                          href={item.contact.website.startsWith('http') ? item.contact.website : `https://${item.contact.website}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 hover:underline"
+                        >
+                          {item.name}
+                        </a>
+                      ) : (
+                        item.name
+                      )}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                       {item.type}

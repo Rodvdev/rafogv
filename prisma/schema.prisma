@@ -50,6 +50,17 @@ model Contact {
   updatedAt   DateTime         @updatedAt
 }
 
+/// User Authentication
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String
+  role      UserRole @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 /// Mechanical Workshop (Taller mecánico)
 model Workshop {
   id          String       @id @default(cuid())
@@ -59,6 +70,7 @@ model Workshop {
   services    String[] // ejemplo: ["alineamiento", "frenos", "gnv"]
   rating      Float? // opcional si quieres usar reseñas
   tenantId    String? // para multi-tenant
+  checked     Boolean      @default(false)
   address     Address?
   contact     Contact?
   createdAt   DateTime     @default(now())
@@ -74,6 +86,7 @@ model EngineRectifier {
   specialties String[] // ejemplo: ["rectificación", "cigüeñal", "camisas"]
   rating      Float?
   tenantId    String?
+  checked     Boolean       @default(false)
   address     Address?
   contact     Contact?
   createdAt   DateTime      @default(now())
@@ -104,4 +117,10 @@ enum RectifierType {
   ELECTRICO
   TORNERIA
   COMPRESORES
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  USER
 }

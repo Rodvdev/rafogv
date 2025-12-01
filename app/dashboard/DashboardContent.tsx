@@ -70,6 +70,27 @@ export default function DashboardContent() {
   const [filterChecked, setFilterChecked] = useState<string>("all");
   const [filterDistrict, setFilterDistrict] = useState("");
 
+  // Cargar totales al inicio (sin filtros)
+  useEffect(() => {
+    const fetchTotals = async () => {
+      try {
+        const [workshopsRes, rectifiersRes] = await Promise.all([
+          fetch("/api/workshops?page=1&limit=1"),
+          fetch("/api/rectifiers?page=1&limit=1"),
+        ]);
+        const workshopsResult = await workshopsRes.json();
+        const rectifiersResult = await rectifiersRes.json();
+        
+        setWorkshopPagination(prev => ({ ...prev, total: workshopsResult.pagination.total }));
+        setRectifierPagination(prev => ({ ...prev, total: rectifiersResult.pagination.total }));
+      } catch (error) {
+        console.error("Error fetching totals:", error);
+      }
+    };
+    fetchTotals();
+  }, []);
+
+  // Cargar datos cuando cambian los filtros o paginación
   useEffect(() => {
     fetchData();
   }, [activeTab, workshopPagination.page, rectifierPagination.page, search, filterChecked, filterDistrict]);
@@ -100,10 +121,10 @@ export default function DashboardContent() {
 
       if (activeTab === "workshops") {
         setWorkshops(result.data);
-        setWorkshopPagination(result.pagination);
+        setWorkshopPagination(prev => ({ ...prev, ...result.pagination }));
       } else {
         setRectifiers(result.data);
-        setRectifierPagination(result.pagination);
+        setRectifierPagination(prev => ({ ...prev, ...result.pagination }));
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -167,9 +188,9 @@ export default function DashboardContent() {
       <nav className="bg-white shadow">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            <h1 className="text-xl font-bold">Dashboard - Talleres Lima</h1>
+            <h1 className="text-xl font-bold text-gray-900">Dashboard - Talleres Lima</h1>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">{session?.user?.email}</span>
+              <span className="text-sm text-gray-900">{session?.user?.email}</span>
               <button
                 onClick={() => signOut({ callbackUrl: "/signin" })}
                 className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
